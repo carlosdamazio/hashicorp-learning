@@ -25,7 +25,7 @@ resource "azurerm_subnet" "subnet" {
 # Public IP
 resource "azurerm_public_ip" "publicip" {
     name                = "${var.resource_prefix}TFPublicIP"
-    location            = "brazilsouth"
+    location            = var.location
     resource_group_name = azurerm_resource_group.rg.name
     allocation_method   = "Dynamic"
     tags                = var.tags
@@ -91,7 +91,7 @@ resource "azurerm_virtual_machine" "vm" {
     storage_image_reference {
         publisher = "Canonical"
         offer     = "UbuntuServer"
-        sku       = "16.04.0-LTS"
+        sku       = var.sku
         version   = "latest"
     }
 
@@ -115,4 +115,8 @@ data "azurerm_public_ip" "ip" {
 
 output "os_sky" {
     value = lookup(var.sku, var.location)
+}
+
+output "public_ip_address" {
+  value = data.azurerm_public_ip.ip.ip_address
 }
